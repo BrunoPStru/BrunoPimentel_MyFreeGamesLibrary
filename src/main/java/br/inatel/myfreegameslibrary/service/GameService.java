@@ -1,5 +1,6 @@
 package br.inatel.myfreegameslibrary.service;
 
+import br.inatel.myfreegameslibrary.mapper.GameMapper;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
 import br.inatel.myfreegameslibrary.repository.GameRepository;
@@ -22,13 +23,13 @@ public class GameService {
     @Autowired
     private PlatformRepository platformRepository;
 
-//    public List<GameDTO> getAllGames() {
-//        return
-//    }
-//
-//    public List<GameDTO> getGameByTitle(String title) {
-//        return
-//    }
+    public List<GameDTO> getAllGames() {
+        return GameMapper.toGameDTOList(gameRepository.findAll());
+    }
+
+    public List<GameDTO> getGameByTitle(String title) {
+        return GameMapper.toGameDTOList(gameRepository.findByGameTitle(title));
+    }
 //
 //    public GameDTO saveGame(GameDTO gameDTO) {
 //

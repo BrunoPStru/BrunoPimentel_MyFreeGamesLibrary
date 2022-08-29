@@ -34,10 +34,10 @@ public class Game {
 
     private String game_url;
 
-    @OneToMany(mappedBy = "game")
+    @ManyToMany(mappedBy = "game")
     private List<Genre> genres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "game")
+    @ManyToMany(mappedBy = "game")
     private List<Platform> platforms = new ArrayList<>();
 
     private String publisher;
