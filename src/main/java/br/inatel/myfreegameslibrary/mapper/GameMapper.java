@@ -2,8 +2,6 @@ package br.inatel.myfreegameslibrary.mapper;
 
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
-import br.inatel.myfreegameslibrary.model.entity.Genre;
-import br.inatel.myfreegameslibrary.model.entity.Platform;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +16,8 @@ public class GameMapper {
 
         GameDTO gameDTO = GameDTO.builder()
                 .id(game.getId())
-                .genres(new HashMap<>())
-                .platforms(new HashMap<>())
+                .genre_id(game.getGenre_id())
                 .build();
-
-        gameDTO.setGenres(game.getGenres().stream()
-                .collect(Collectors.toMap(Genre::getId, Genre::getGenre)));
-
-        gameDTO.setPlatforms(game.getPlatforms().stream()
-                .collect(Collectors.toMap(Platform::getId, Platform::getPlatform)));
 
         return gameDTO;
     }

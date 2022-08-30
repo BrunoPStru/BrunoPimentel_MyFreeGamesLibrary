@@ -10,8 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -34,11 +32,10 @@ public class Game {
 
     private String game_url;
 
-    @ManyToMany(mappedBy = "game")
-    private List<Genre> genres = new ArrayList<>();
+    @ManyToOne
+    private Genre genre_id;
 
-    @ManyToMany(mappedBy = "game")
-    private List<Platform> platforms = new ArrayList<>();
+    private String platform;
 
     private String publisher;
 
