@@ -3,7 +3,6 @@ package br.inatel.myfreegameslibrary.mapper;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,7 @@ public class GameMapper {
         return gameList.stream().map(game -> toGameDTO(game)).collect(Collectors.toList());
     }
 
-    private static GameDTO toGameDTO(Game game) {
+    public static GameDTO toGameDTO(Game game) {
 
         GameDTO gameDTO = GameDTO.builder()
                 .id(game.getId())
@@ -20,5 +19,15 @@ public class GameMapper {
                 .build();
 
         return gameDTO;
+    }
+
+    public static Game toGame(GameDTO gameDTO) {
+
+        Game game = Game.builder()
+                .id(gameDTO.getId())
+                .genre_id(gameDTO.getGenre_id())
+                .build();
+
+        return game;
     }
 }
