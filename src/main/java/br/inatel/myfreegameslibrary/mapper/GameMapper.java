@@ -2,6 +2,7 @@ package br.inatel.myfreegameslibrary.mapper;
 
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
+import br.inatel.myfreegameslibrary.model.entity.Genre;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class GameMapper {
                 .thumbnail(game.getThumbnail())
                 .short_description(game.getShort_description())
                 .game_url(game.getGame_url())
-                .genre_id(game.getGenre_id())
+                .genre(game.getGenre())
                 .platform(game.getPlatform())
                 .publisher(game.getPublisher())
                 .developer(game.getDeveloper())
@@ -39,7 +40,7 @@ public class GameMapper {
                 .thumbnail(gameDTO.getThumbnail())
                 .short_description(gameDTO.getShort_description())
                 .game_url(gameDTO.getGame_url())
-                .genre_id(gameDTO.getGenre_id())
+                .genre(gameDTO.getGenre())
                 .platform(gameDTO.getPlatform())
                 .publisher(gameDTO.getPublisher())
                 .developer(gameDTO.getDeveloper())

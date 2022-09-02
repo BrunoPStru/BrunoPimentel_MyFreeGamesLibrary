@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +30,8 @@ public class GameDTO {
     private String game_url;
 
     @NotNull
-    private Genre genre_id;
+    @NotEmpty
+    private Genre genre;
 
     private String platform;
 

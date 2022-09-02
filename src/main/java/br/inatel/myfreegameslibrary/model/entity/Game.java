@@ -33,7 +33,7 @@ public class Game {
     private String game_url;
 
     @ManyToOne
-    private Genre genre_id;
+    private Genre genre;
 
     private String platform;
 
