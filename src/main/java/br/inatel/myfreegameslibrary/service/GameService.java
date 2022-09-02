@@ -37,7 +37,7 @@ public class GameService {
 
         Game game = GameMapper.toGame(gameDTO);
 
-        if (true){
+        if (isGameValid(game)){
             return GameMapper.toGameDTO(gameRepository.save(game));
         }
 
@@ -48,9 +48,10 @@ public class GameService {
 //    public GameDTO DeleteGame(GameDTO gameDTO) {
 //
 //    }
-//
-//    private Boolean isGameValid(Game game) {
-//        return webClientAdapter.getAllGame().stream();
-//    }
+
+    private Boolean isGameValid(Game gameTitle) {
+        return webClientAdapter.getAllGame().stream()
+                .anyMatch(game -> game.getId().equals(gameTitle.getTitle()));
+    }
 
 }
