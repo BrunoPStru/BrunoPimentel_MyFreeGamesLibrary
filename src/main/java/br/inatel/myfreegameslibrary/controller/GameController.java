@@ -34,8 +34,9 @@ public class GameController {
         return ResponseEntity.created(null).body(gameService.saveGame(gameDTO));
     }
 
-//    @DeleteMapping
-//    public ResponseEntity<GameDTO> deleteGame(@Valid @RequestBody GameDTO gameDTO){
+//    @DeleteMapping("/{title}")
+//    public ResponseEntity<Object> deleteGame(@PathVariable  String title){
+//
 //        return ResponseEntity
 //    }
 

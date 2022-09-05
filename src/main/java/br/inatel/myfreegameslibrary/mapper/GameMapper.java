@@ -40,7 +40,7 @@ public class GameMapper {
                 .thumbnail(gameDTO.getThumbnail())
                 .short_description(gameDTO.getShort_description())
                 .game_url(gameDTO.getGame_url())
-                .genre(gameDTO.getGenre())
+                .genre(new Genre())
                 .platform(gameDTO.getPlatform())
                 .publisher(gameDTO.getPublisher())
                 .developer(gameDTO.getDeveloper())
