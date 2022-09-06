@@ -24,6 +24,7 @@ public class GameController {
         List<GameDTO> gameList;
         if (title.isPresent()) {
             gameList = gameService.getGameByTitle(title.get());
+
         } else {
             gameList = gameService.getAllGames();
         }
@@ -37,7 +38,7 @@ public class GameController {
 //    }
 
 //    @DeleteMapping("/{title}")
-//    public ResponseEntity<Object> deleteGame(@PathVariable  String title){
+//    public ResponseEntity<Object> deleteGame(@PathVariable String title){
 //
 //        return ResponseEntity
 //    }

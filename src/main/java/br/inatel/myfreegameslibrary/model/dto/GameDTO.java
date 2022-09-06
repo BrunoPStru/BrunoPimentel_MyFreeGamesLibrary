@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @Builder
 public class GameDTO {
 
+    @NotNull
+    @NotEmpty
     private Long id;
 
     @NotNull

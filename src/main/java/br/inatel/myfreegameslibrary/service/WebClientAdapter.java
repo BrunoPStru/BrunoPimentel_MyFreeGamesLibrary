@@ -2,7 +2,9 @@ package br.inatel.myfreegameslibrary.service;
 
 import br.inatel.myfreegameslibrary.exception.FreeToPlayConnectionException;
 import br.inatel.myfreegameslibrary.model.entity.Game;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Slf4j
 public class WebClientAdapter {
     @Value("${my.free.games.host}")
     private String freeToPlayHost;
@@ -41,5 +44,10 @@ public class WebClientAdapter {
         } catch (WebClientException webClientException) {
             throw new FreeToPlayConnectionException(this.freeToPlayBaseUrl);
         }
+    }
+
+    @CacheEvict(cacheNames = "gamesCache")
+    public void ClearGameCache(){
+        log.info("Cache cleared");
     }
 }

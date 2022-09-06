@@ -1,11 +1,13 @@
 package br.inatel.myfreegameslibrary.exception;
 
-import br.inatel.myfreegameslibrary.model.entity.Game;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-public class GameNotFoundException extends RuntimeException {
-    public GameNotFoundException(Game game) {
+public class GameNotFoundException extends ResponseStatusException {
+    public GameNotFoundException(String title) {
 
-        super(String.format("Game '%s' was not found.", game.getTitle()));
+        super(HttpStatus.NOT_FOUND, String.format("Game %s was not found.", title));
 
     }
 }
+
