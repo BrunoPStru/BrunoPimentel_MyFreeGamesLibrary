@@ -1,6 +1,5 @@
 package br.inatel.myfreegameslibrary.model.dto;
 
-import br.inatel.myfreegameslibrary.model.entity.Genre;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +30,7 @@ public class GameDTO {
 
     @NotNull
     @NotEmpty
-    private Genre genre;
+    private String genre;
 
     private String platform;
 

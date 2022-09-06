@@ -25,7 +25,7 @@ public class WebClientAdapter {
     private WebClient webClient;
 
     @PostConstruct
-    public void buildFreeToPlayBaseUrl(){
+    public void buildFreeToPlayBaseUrl() {
         this.freeToPlayBaseUrl = String.format("https://%s:%s", this.freeToPlayHost, this.freeToPlayPort);
         this.webClient = WebClient.builder()
                 .baseUrl(this.freeToPlayBaseUrl)

@@ -27,4 +27,8 @@ public class Genre {
     @NotEmpty
     private String genre;
 
+    public Genre(String genre){
+        this.genre = genre;
+    }
+
 }
