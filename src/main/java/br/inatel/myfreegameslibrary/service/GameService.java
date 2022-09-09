@@ -43,7 +43,7 @@ public class GameService {
 
         Game game = GameMapper.toGame(gameDTO);
 
-        if (isGameValid(game)) {
+        if (game != null && isGameValid(game)) {
             return GameMapper.toGameDTO(gameRepository.save(game));
         }
 
@@ -61,9 +61,18 @@ public class GameService {
         gameRepository.delete(game.get(0));
     }
 
-    private Boolean isGameValid(Game gameTitle) {
-        return webClientAdapter.getAllGame().stream()
-                .anyMatch(freeGame -> freeGame.getTitle().equals(gameTitle.getTitle()));
+    private Boolean isGameValid(Game game) {
+        Boolean validate = false;
+
+//        validate = webClientAdapter.getFlux()
+//                .stream()
+//                .anyMatch(freeGame -> freeGame.getTitle().equals(game.getTitle()));
+//
+        validate = webClientAdapter.getAllGames()
+                .stream()
+                .anyMatch(freeGame -> freeGame.getTitle().equals(game.getTitle()));
+
+        return validate;
     }
 
 }

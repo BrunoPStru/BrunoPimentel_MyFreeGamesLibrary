@@ -41,7 +41,7 @@ public class Game {
 
     private String developer;
 
-    @JsonFormat(pattern = "YYYY-MM-DD")
+    @JsonFormat(pattern = "YYYY-MM-dd")
     private LocalDate release_date;
 
     private String freetogame_profile_url;

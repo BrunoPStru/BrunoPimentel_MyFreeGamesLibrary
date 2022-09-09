@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 public class GameControllerTest {
 
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -34,7 +35,7 @@ public class GameControllerTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertEquals(1, gameDTOList.size());
+        assertEquals(2, gameDTOList.size());
         assertEquals(1, gameDTOList.get(0).getId());
         assertEquals("PUBG: BATTLEGROUNDS", gameDTOList.get(0).getTitle());
         assertEquals("https://www.freetogame.com/g/516/thumbnail.jpg", gameDTOList.get(0).getThumbnail());

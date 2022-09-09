@@ -2,6 +2,7 @@ package br.inatel.myfreegameslibrary.controller;
 
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.service.GameService;
+import br.inatel.myfreegameslibrary.service.WebClientAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private WebClientAdapter webClientAdapter;
+
     @GetMapping
     public ResponseEntity<List<GameDTO>> getGames(@RequestParam(required = false) Optional<String> title) {
         List<GameDTO> gameList;
@@ -31,7 +35,8 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<GameDTO> saveGame(@Valid @RequestBody GameDTO gameDTO) {
+    public ResponseEntity<GameDTO> saveGame(@RequestParam Long id) {
+        GameDTO gameDTO = webClientAdapter.getGameById(id);
         return ResponseEntity.created(null).body(gameService.saveGame(gameDTO));
     }
 

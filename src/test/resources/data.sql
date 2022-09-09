@@ -1,5 +1,5 @@
 INSERT INTO Genre(genre) VALUES('Shooter');
-INSERT INTO Genre(genre) VALUES('Strategy');
+INSERT INTO Genre(genre) VALUES('ARPG');
 
 INSERT INTO Game(title, thumbnail, short_description, game_url, genre_id, platform, publisher, developer, release_date, freetogame_profile_url)
     VALUES('PUBG: BATTLEGROUNDS', 'https://www.freetogame.com/g/516/thumbnail.jpg',
@@ -8,7 +8,7 @@ INSERT INTO Game(title, thumbnail, short_description, game_url, genre_id, platfo
         'https://www.freetogame.com/pubg');
 
 INSERT INTO Game(title, thumbnail, short_description, game_url, genre_id, platform, publisher, developer, release_date, freetogame_profile_url)
-    VALUES('Game Of Thrones Winter Is Coming', 'https://www.freetogame.com/g/340/thumbnail.jpg',
-        'A free-to-play browser-based RTS based on the George R.R. Martin novels and popular HBO series.',
-        'https://www.freetogame.com/open/game-of-thrones-winter-is-coming', 2, 'Web Browser', 'GTArcade', 'YOOZOO Games', '2019-11-14',
-        'https://www.freetogame.com/game-of-thrones-winter-is-coming');
+    VALUES('Lost Ark', 'https://www.freetogame.com/g/517/thumbnail.jpg',
+        'Smilegate’s free-to-play multiplayer ARPG is a massive adventure filled with lands waiting to be explored, people waiting to be met, and an ancient evil waiting to be destroyed.',
+        'https://www.freetogame.com/open/lost-ark', 2, 'PC (Windows)', 'Amazon Games', 'Smilegate RPG', '2022-02-11',
+        'https://www.freetogame.com/lost-ark');

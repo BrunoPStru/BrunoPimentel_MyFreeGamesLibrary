@@ -1,6 +1,6 @@
 package br.inatel.myfreegameslibrary.service;
 
-import br.inatel.myfreegameslibrary.exception.FreeToPlayConnectionException;
+import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,45 +9,104 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import reactor.core.publisher.Flux;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 public class WebClientAdapter {
     @Value("${my.free.games.host}")
-    private String freeToPlayHost;
+    private String myFreeGamesHost;
 
     @Value("${my.free.games.port}")
-    private String freeToPlayPort;
+    private String myFreeGamesPort;
+
+    @Value("${my.free.games.url}")
+    private String myFreeGamesUrl;
+
+    @Value("${free.to.play.url}")
+    private String freeToPlayUrl;
 
     private String freeToPlayBaseUrl;
 
     private WebClient webClient;
 
     @PostConstruct
+    @Cacheable(cacheNames = "gameCache")
     public void buildFreeToPlayBaseUrl() {
-        this.freeToPlayBaseUrl = String.format("https://%s:%s", this.freeToPlayHost, this.freeToPlayPort);
+        this.freeToPlayBaseUrl = String.format(myFreeGamesUrl + "/api/games");
         this.webClient = WebClient.builder()
                 .baseUrl(this.freeToPlayBaseUrl)
                 .build();
     }
 
-    @Cacheable(cacheNames = "gameCache")
-    public List<Game> getAllGame() {
-
+    public GameDTO getGameById(Long id) {
         try {
-            Game[] gameArr = this.webClient.get().uri("/game").retrieve().bodyToMono(Game[].class).block();
-            return Arrays.asList(gameArr);
-        } catch (WebClientException webClientException) {
-            throw new FreeToPlayConnectionException(this.freeToPlayBaseUrl);
+            GameDTO gameDTO = WebClient.create(myFreeGamesUrl)
+                    .get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/api/game")
+                            .queryParam("id", "{id}")
+                            .build(id))
+                    .retrieve()
+                    .bodyToMono(GameDTO.class)
+                    .block();
+
+            return gameDTO;
+        } catch (WebClientException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
+    @Cacheable(cacheNames = "gameCache")
+    public List<Game> getAllGames() {
+        List<Game> games = new ArrayList<>();
+
+        try {
+            Flux<Game> fluxGame = WebClient.create(myFreeGamesUrl)
+                    .get()
+                    .uri("/game")
+                    .retrieve()
+                    .bodyToFlux(Game.class);
+
+            fluxGame.subscribe(a -> games.add(a));
+            fluxGame.blockLast();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        } catch (NoSuchElementException e) {
+//            throw new NoSuchElementException(e.getMessage());
+//        }
+
+        return games;
+    }
+
+//    @Cacheable(cacheNames = "gameCache")
+//    public List<Game> getFlux(){
+//        List<Game> games = new ArrayList<>();
+//
+//        try{
+//            Flux<Game> fluxGame = WebClient.create(freeToPlayUrl)
+//                    .get()
+//                    .uri("/api/games")
+//                    .retrieve()
+//                    .bodyToFlux(Game.class);
+//
+//            fluxGame.subscribe(a -> games.add(a));
+//            fluxGame.blockLast();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return games;
+//    }
+
     @CacheEvict(cacheNames = "gamesCache")
-    public void ClearGameCache(){
+    public void ClearGameCache() {
         log.info("Cache cleared");
     }
 }

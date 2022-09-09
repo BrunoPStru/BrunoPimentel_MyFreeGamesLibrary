@@ -40,7 +40,7 @@ public class GameDTO {
 
     private String developer;
 
-    @JsonFormat(pattern = "YYYY-MM-DD")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate release_date;
 
     private String freetogame_profile_url;

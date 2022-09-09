@@ -139,30 +139,30 @@ public class GameServiceTest {
         assertEquals(0, gameDTOList.size());
     }
 
-    @Test
-    public void givenSaveGame_whenSaveValidGameAndGenre_shouldCreateAGame() {
-
-    }
-
-    @Test
-    public void givenSaveGame_whenSaveInvalidGame_shouldReturnGameNotFoundException() {
-
-    }
-
-    @Test
-    public void givenSaveGame_whenSaveNoGame_shouldReturnGameNotFoundException() {
-
-    }
-
 //    @Test
-//    public void givenDeleteGameByTitle_whenDeleteGameByValidTitle_shouldDeleteGame() {
-//        when(gameRepository.findGamesByTitle(any(String.class))).thenReturn(Arrays.asList());
+//    public void givenSaveGame_whenSaveValidGameAndGenre_shouldCreateAGame() {
 //
-//        Game gameDelete = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
-//        gameService.deleteGame("PUBG: BATTLEGROUNDS");
-//        Game emptyGame = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
-//        assertEquals(true, emptyGame == null);
 //    }
+//
+//    @Test
+//    public void givenSaveGame_whenSaveInvalidGame_shouldReturnGameNotFoundException() {
+//
+//    }
+//
+//    @Test
+//    public void givenSaveGame_whenSaveNoGame_shouldReturnGameNotFoundException() {
+//
+//    }
+
+    @Test
+    public void givenDeleteGameByTitle_whenDeleteGameByValidTitle_shouldDeleteGame() {
+        when(gameRepository.findGamesByTitle(any(String.class))).thenReturn(Arrays.asList(game));
+
+        Game gameDelete = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
+        gameService.deleteGame("PUBG: BATTLEGROUNDS");
+        Game emptyGame = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
+        assertEquals(true, emptyGame == null);
+    }
 
     @Test
     public void givenDeleteGameByTitle_whenDeleteGameByInvalidTitle_shouldReturnGameNotFoundException() {
