@@ -1,7 +1,6 @@
 package br.inatel.myfreegameslibrary.service;
 
 import br.inatel.myfreegameslibrary.exception.GameNotFoundException;
-import br.inatel.myfreegameslibrary.exception.GameUnprocessableEntityException;
 import br.inatel.myfreegameslibrary.mapper.GameMapper;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
@@ -34,13 +33,7 @@ public class GameService {
 
     @Cacheable(value = "gamesCache")
     public List<GameDTO> getGameByTitle(String title) {
-        List<Game> game = gameRepository.findByTitle(title);
-
-        if (title.isBlank()) {
-            throw new GameUnprocessableEntityException();
-        } else if (game.isEmpty()) {
-            throw new GameNotFoundException(title);
-        }
+        List<Game> game = gameRepository.findGamesByTitle(title);
 
         return GameMapper.toGameDTOList(game);
     }
@@ -54,14 +47,19 @@ public class GameService {
             return GameMapper.toGameDTO(gameRepository.save(game));
         }
 
-        throw new GameNotFoundException(game.getTitle());
+        throw new GameNotFoundException();
 
     }
 
-//    @CacheEvict(value = "gamesCache", allEntries = true)
-//    public GameDTO DeleteGame(GameDTO gameDTO) {
-//
-//    }
+    @CacheEvict(value = "gamesCache", allEntries = true)
+    public void deleteGame(String title) {
+        List<Game> game = gameRepository.findGamesByTitle(title);
+
+        if (game.isEmpty()) {
+            throw new GameNotFoundException();
+        }
+        gameRepository.delete(game.get(0));
+    }
 
     private Boolean isGameValid(Game gameTitle) {
         return webClientAdapter.getAllGame().stream()

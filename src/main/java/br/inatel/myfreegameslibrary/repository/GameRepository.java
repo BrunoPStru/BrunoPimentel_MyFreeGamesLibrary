@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, String> {
-    List<Game> findByTitle(String title);
+    List<Game> findGamesByTitle(String title);
+
+    Game findGameByTitle(String title);
 
 }

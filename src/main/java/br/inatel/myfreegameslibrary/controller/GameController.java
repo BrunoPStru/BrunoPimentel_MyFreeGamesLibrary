@@ -3,12 +3,11 @@ package br.inatel.myfreegameslibrary.controller;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ public class GameController {
         List<GameDTO> gameList;
         if (title.isPresent()) {
             gameList = gameService.getGameByTitle(title.get());
-
         } else {
             gameList = gameService.getAllGames();
         }
@@ -32,15 +30,15 @@ public class GameController {
         return ResponseEntity.ok(gameList);
     }
 
-//    @PostMapping
-//    public ResponseEntity<GameDTO> saveGame(@Valid @RequestBody GameDTO gameDTO) {
-//        return ResponseEntity.created(null).body(gameService.saveGame(gameDTO));
-//    }
+    @PostMapping
+    public ResponseEntity<GameDTO> saveGame(@Valid @RequestBody GameDTO gameDTO) {
+        return ResponseEntity.created(null).body(gameService.saveGame(gameDTO));
+    }
 
-//    @DeleteMapping("/{title}")
-//    public ResponseEntity<Object> deleteGame(@PathVariable String title){
-//
-//        return ResponseEntity
-//    }
+    @DeleteMapping()
+    public ResponseEntity<Object> deleteGame(@RequestParam(required = false) String title) {
+        gameService.deleteGame(title);
+        return ResponseEntity.status(HttpStatus.OK).body("Game " + title + " deleted successfully!");
+    }
 
 }
