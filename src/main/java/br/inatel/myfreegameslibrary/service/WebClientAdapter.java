@@ -45,7 +45,7 @@ public class WebClientAdapter {
 
     public GameDTO getGameById(Long id) {
         try {
-            GameDTO gameDTO = WebClient.create(myFreeGamesUrl)
+            GameDTO gameDTO = WebClient.create(freeToPlayUrl)
                     .get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/api/game")
@@ -78,32 +78,9 @@ public class WebClientAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        } catch (NoSuchElementException e) {
-//            throw new NoSuchElementException(e.getMessage());
-//        }
 
         return games;
     }
-
-//    @Cacheable(cacheNames = "gameCache")
-//    public List<Game> getFlux(){
-//        List<Game> games = new ArrayList<>();
-//
-//        try{
-//            Flux<Game> fluxGame = WebClient.create(freeToPlayUrl)
-//                    .get()
-//                    .uri("/api/games")
-//                    .retrieve()
-//                    .bodyToFlux(Game.class);
-//
-//            fluxGame.subscribe(a -> games.add(a));
-//            fluxGame.blockLast();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return games;
-//    }
 
     @CacheEvict(cacheNames = "gamesCache")
     public void ClearGameCache() {

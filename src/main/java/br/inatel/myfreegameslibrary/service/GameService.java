@@ -1,10 +1,13 @@
 package br.inatel.myfreegameslibrary.service;
 
+import br.inatel.myfreegameslibrary.exception.AlredyExistsException;
 import br.inatel.myfreegameslibrary.exception.GameNotFoundException;
 import br.inatel.myfreegameslibrary.mapper.GameMapper;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
+import br.inatel.myfreegameslibrary.model.entity.Genre;
 import br.inatel.myfreegameslibrary.repository.GameRepository;
+import br.inatel.myfreegameslibrary.repository.GenreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,6 +28,9 @@ public class GameService {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private GenreRepository genreRepository;
+
 
     @Cacheable(value = "gamesCache")
     public List<GameDTO> getAllGames() {
@@ -39,16 +45,29 @@ public class GameService {
     }
 
     @CacheEvict(value = "gamesCache", allEntries = true)
-    public GameDTO saveGame(GameDTO gameDTO) {
+    public GameDTO saveGame(Long id) {
 
-        Game game = GameMapper.toGame(gameDTO);
+        if (id != null) {
+            GameDTO gameDTO = webClientAdapter.getGameById(id);
 
-        if (game != null && isGameValid(game)) {
-            return GameMapper.toGameDTO(gameRepository.save(game));
+            if (gameDTO == null) {
+                throw new NullPointerException();
+            }
+
+            Game gameAux = gameRepository.findGameByTitle(gameDTO.getTitle());
+
+            if (gameAux == null) {
+                Genre genre = checkGenre(gameDTO.getGenre());
+
+                Game game = GameMapper.toGame(gameDTO);
+
+                game.setGenre(genre);
+
+                return GameMapper.toGameDTO(gameRepository.save(game));
+            }
         }
 
-        throw new GameNotFoundException();
-
+        throw new AlredyExistsException();
     }
 
     @CacheEvict(value = "gamesCache", allEntries = true)
@@ -61,18 +80,15 @@ public class GameService {
         gameRepository.delete(game.get(0));
     }
 
-    private Boolean isGameValid(Game game) {
-        Boolean validate = false;
+    private Genre checkGenre(String genreName) {
+        Genre genre = genreRepository.findGenreByGenre(genreName);
 
-//        validate = webClientAdapter.getFlux()
-//                .stream()
-//                .anyMatch(freeGame -> freeGame.getTitle().equals(game.getTitle()));
-//
-        validate = webClientAdapter.getAllGames()
-                .stream()
-                .anyMatch(freeGame -> freeGame.getTitle().equals(game.getTitle()));
+        if (genre == null) {
+            Genre genreAux = new Genre(genreName);
+            genre = genreRepository.save(genreAux);
+        }
 
-        return validate;
+        return genre;
     }
 
 }

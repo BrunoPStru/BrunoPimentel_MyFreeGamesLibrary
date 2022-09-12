@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,12 +35,11 @@ public class GameController {
 
     @PostMapping
     public ResponseEntity<GameDTO> saveGame(@RequestParam Long id) {
-        GameDTO gameDTO = webClientAdapter.getGameById(id);
-        return ResponseEntity.created(null).body(gameService.saveGame(gameDTO));
+        return ResponseEntity.created(null).body(gameService.saveGame(id));
     }
 
     @DeleteMapping()
-    public ResponseEntity<Object> deleteGame(@RequestParam(required = false) String title) {
+    public ResponseEntity<Object> deleteGame(@RequestParam String title) {
         gameService.deleteGame(title);
         return ResponseEntity.status(HttpStatus.OK).body("Game " + title + " deleted successfully!");
     }

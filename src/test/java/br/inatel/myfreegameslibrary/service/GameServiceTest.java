@@ -5,6 +5,7 @@ import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
 import br.inatel.myfreegameslibrary.model.entity.Genre;
 import br.inatel.myfreegameslibrary.repository.GameRepository;
+import br.inatel.myfreegameslibrary.repository.GenreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,14 +33,19 @@ public class GameServiceTest {
 
     private Game game;
 
+    private List<Game> gamesList;
+
     @Mock
     private GameRepository gameRepository;
+
+    @Mock
+    private GenreRepository genreRepository;
 
     @Mock
     private WebClientAdapter webClientAdapter;
 
     @InjectMocks
-    private GameService gameService = new GameService(webClientAdapter, gameRepository);
+    private GameService gameService = new GameService(webClientAdapter, gameRepository, genreRepository);
 
     @BeforeEach
     public void init() {
@@ -139,11 +145,27 @@ public class GameServiceTest {
         assertEquals(0, gameDTOList.size());
     }
 
-//    @Test
-//    public void givenSaveGame_whenSaveValidGameAndGenre_shouldCreateAGame() {
-//
-//    }
-//
+    @Test
+    public void givenSaveGame_whenSaveValidGameAndGenre_shouldCreateAGame() {
+        when(gameService.getAllGames()).thenReturn(Arrays.asList());
+        when(gameRepository.save(game)).thenReturn(game);
+
+        gameDTO = gameService.saveGame(516L);
+
+        assertNotNull(gameDTO);
+        assertEquals(1, gameDTO.getId());
+        assertEquals("PUBG: BATTLEGROUNDS", gameDTO.getTitle());
+        assertEquals("https://www.freetogame.com/g/516/thumbnail.jpg", gameDTO.getThumbnail());
+        assertEquals("Get into the action in one of the longest running battle royale games PUBG Battlegrounds.", gameDTO.getShort_description());
+        assertEquals("https://www.freetogame.com/open/pubg", gameDTO.getGame_url());
+        assertEquals("Shooter", gameDTO.getGenre());
+        assertEquals("PC (Windows)", gameDTO.getPlatform());
+        assertEquals("KRAFTON, Inc.", gameDTO.getPublisher());
+        assertEquals("KRAFTON, Inc.", gameDTO.getDeveloper());
+        assertEquals(LocalDate.parse("2022-01-12", DTF), gameDTO.getRelease_date());
+        assertEquals("https://www.freetogame.com/pubg", gameDTO.getFreetogame_profile_url());
+    }
+
 //    @Test
 //    public void givenSaveGame_whenSaveInvalidGame_shouldReturnGameNotFoundException() {
 //
@@ -158,7 +180,6 @@ public class GameServiceTest {
     public void givenDeleteGameByTitle_whenDeleteGameByValidTitle_shouldDeleteGame() {
         when(gameRepository.findGamesByTitle(any(String.class))).thenReturn(Arrays.asList(game));
 
-        Game gameDelete = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
         gameService.deleteGame("PUBG: BATTLEGROUNDS");
         Game emptyGame = gameRepository.findGameByTitle("PUBG: BATTLEGROUNDS");
         assertEquals(true, emptyGame == null);
