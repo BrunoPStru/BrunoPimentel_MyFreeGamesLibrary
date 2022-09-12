@@ -1,6 +1,6 @@
 package br.inatel.myfreegameslibrary.service;
 
-import br.inatel.myfreegameslibrary.exception.AlredyExistsException;
+import br.inatel.myfreegameslibrary.exception.GameAlredyExistsException;
 import br.inatel.myfreegameslibrary.exception.GameNotFoundException;
 import br.inatel.myfreegameslibrary.mapper.GameMapper;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
@@ -11,12 +11,14 @@ import br.inatel.myfreegameslibrary.repository.GenreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * This class is responsible for all actions related to Games.
+ */
 @Service
 @Transactional
 @AllArgsConstructor
@@ -32,18 +34,33 @@ public class GameService {
     private GenreRepository genreRepository;
 
 
-    @Cacheable(value = "gamesCache")
+    /**
+     * This method lists all the games that are in the library.
+     *
+     * @return all games.
+     */
     public List<GameDTO> getAllGames() {
         return GameMapper.toGameDTOList(gameRepository.findAll());
     }
 
-    @Cacheable(value = "gamesCache")
+    /**
+     * This method shows the searched game.
+     *
+     * @param title The Title of the Game.
+     * @return the searched game.
+     */
     public List<GameDTO> getGameByTitle(String title) {
         List<Game> game = gameRepository.findGamesByTitle(title);
 
         return GameMapper.toGameDTOList(game);
     }
 
+    /**
+     * This method save a new game and genre.
+     *
+     * @param id The game id in external API.
+     * @return the game registered.
+     */
     @CacheEvict(value = "gamesCache", allEntries = true)
     public GameDTO saveGame(Long id) {
 
@@ -51,7 +68,7 @@ public class GameService {
             GameDTO gameDTO = webClientAdapter.getGameById(id);
 
             if (gameDTO == null) {
-                throw new NullPointerException();
+                throw new GameNotFoundException();
             }
 
             Game gameAux = gameRepository.findGameByTitle(gameDTO.getTitle());
@@ -65,11 +82,18 @@ public class GameService {
 
                 return GameMapper.toGameDTO(gameRepository.save(game));
             }
+
+            throw new GameAlredyExistsException();
         }
 
-        throw new AlredyExistsException();
+        throw new GameNotFoundException();
     }
 
+    /**
+     * This method deletes a game.
+     *
+     * @param title The Title of the Game.
+     */
     @CacheEvict(value = "gamesCache", allEntries = true)
     public void deleteGame(String title) {
         List<Game> game = gameRepository.findGamesByTitle(title);
@@ -80,12 +104,19 @@ public class GameService {
         gameRepository.delete(game.get(0));
     }
 
+    /**
+     * This method saves a new genre.
+     *
+     * @param genreName The genre of the game.
+     * @return the genre.
+     */
     private Genre checkGenre(String genreName) {
         Genre genre = genreRepository.findGenreByGenre(genreName);
 
         if (genre == null) {
             Genre genreAux = new Genre(genreName);
             genre = genreRepository.save(genreAux);
+            webClientAdapter.ClearGenreCache();
         }
 
         return genre;

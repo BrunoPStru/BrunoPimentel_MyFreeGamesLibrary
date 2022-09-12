@@ -34,7 +34,7 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<GameDTO> saveGame(@RequestParam Long id) {
+    public ResponseEntity<GameDTO> saveGame(@RequestParam(required = false) Long id) {
         return ResponseEntity.created(null).body(gameService.saveGame(id));
     }
 

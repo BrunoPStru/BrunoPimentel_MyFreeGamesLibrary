@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - 3306:3306
+      - 33060:33060
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bootdb
+    networks:
+      - My-Free-Games
+    volumes:
+      - /var/lib/mysql
+
+  myfreegames:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    image: bruno-pimentel-struminski/myfreegames
+    container_name: myfreegames
+    ports:
+      - 8081:8081
+    environment:      
+      - PORT=8081
+      - MYSQL_CONTAINER=mysql
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - My-Free-Games
+    depends_on:
+      - mysql
+      
+  
+networks:
+  My-Free-Games:
+    driver: bridge

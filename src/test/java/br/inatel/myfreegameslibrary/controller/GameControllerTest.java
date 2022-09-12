@@ -34,7 +34,7 @@ public class GameControllerTest {
     private GameRepository gameRepository;
 
     @Test
-    public void givenGetAllGames_whenCallGetMethod_shouldReturnGameDTOList() {
+    public void givenGetAllGames_whenCallGetMethod_shouldReturnsGameDTOList() {
         List<GameDTO> gameDTOList = webTestClient.get()
                 .uri("/game")
                 .exchange()
@@ -44,7 +44,7 @@ public class GameControllerTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertEquals(2, gameDTOList.size());
+        assertNotNull(gameDTOList);
         assertEquals(1, gameDTOList.get(0).getId());
         assertEquals("PUBG: BATTLEGROUNDS", gameDTOList.get(0).getTitle());
         assertEquals("https://www.freetogame.com/g/516/thumbnail.jpg", gameDTOList.get(0).getThumbnail());
@@ -59,7 +59,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void givenGetGameByValidTitle_whenCallGetMethod_shouldReturnGameDTOList() {
+    public void givenGetGameByValidTitle_whenCallGetMethod_shouldReturnsGameDTOList() {
         List<GameDTO> gameDTOList = webTestClient.get()
                 .uri("/game?title=PUBG: BATTLEGROUNDS")
                 .exchange()
@@ -69,6 +69,7 @@ public class GameControllerTest {
                 .returnResult()
                 .getResponseBody();
 
+        assertNotNull(gameDTOList);
         assertEquals(1, gameDTOList.size());
         assertEquals(1, gameDTOList.get(0).getId());
         assertEquals("PUBG: BATTLEGROUNDS", gameDTOList.get(0).getTitle());
@@ -84,7 +85,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void givenGetGameByInvalidTitle_whenCallGetMethod_shouldReturnEmptyList() {
+    public void givenGetGameByInvalidTitle_whenCallGetMethod_shouldReturnsEmptyList() {
         List<GameDTO> gameDTOList = webTestClient.get()
                 .uri("/game?title=Invalid")
                 .exchange()
@@ -99,7 +100,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void givenGetGameByNoTitle_whenCallGetMethod_shouldReturnEmptyList() {
+    public void givenGetGameByNoTitle_whenCallGetMethod_shouldReturnsEmptyList() {
         List<GameDTO> gameDTOList = webTestClient.get()
                 .uri("/game?title=")
                 .exchange()
@@ -113,6 +114,33 @@ public class GameControllerTest {
         assertEquals(0, gameDTOList.size());
     }
 
+    @Test
+    public void givenSaveValidGame_whenCallSaveGame_shouldReturnsGameDTO() {
+        webTestClient.post()
+                .uri("/game?id=340")
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectBody(String.class);
+    }
+
+    @Test
+    public void givenSaveInvalidGame_whenCallSaveGame_shouldReturnsFreeToPlayConnectionException() {
+        webTestClient.post()
+                .uri("/game?id=999")
+                .exchange()
+                .expectStatus()
+                .is5xxServerError();
+    }
+
+    @Test
+    public void givenSaveNoGame_whenCallSaveGame_shouldReturnsGameNotFoundException() {
+        webTestClient.post()
+                .uri("/game?id=")
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
 
     @Test
     public void givenDeleteGameByValidTitle_whenCallDeleteMethod_shouldDeleteGame() {
@@ -126,24 +154,20 @@ public class GameControllerTest {
     }
 
     @Test
-    public void givenDeleteGameByInvalidTitle_whenCallDeleteMethod_shouldReturnGameNotFoundException() {
+    public void givenDeleteGameByInvalidTitle_whenCallDeleteMethod_shouldReturnsGameNotFoundException() {
         webTestClient.delete()
                 .uri("/game?title=Invalid")
                 .exchange()
                 .expectStatus()
-                .isNotFound()
-                .expectBody(String.class)
-                .isEqualTo("Game not found.");
+                .isNotFound();
     }
 
     @Test
-    public void givenDeleteGameByNoTitle_whenCallDeleteMethod_shouldReturnGameNotFoundException() {
+    public void givenDeleteGameByNoTitle_whenCallDeleteMethod_shouldReturnsGameNotFoundException() {
         webTestClient.delete()
                 .uri("/game?title=")
                 .exchange()
                 .expectStatus()
-                .isNotFound()
-                .expectBody(String.class)
-                .isEqualTo("Game not found.");
+                .isNotFound();
     }
 }

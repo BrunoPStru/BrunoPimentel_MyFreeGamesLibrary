@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class GameServiceTest {
 
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -34,6 +36,8 @@ public class GameServiceTest {
     private Game game;
 
     private List<Game> gamesList;
+
+    private List<GameDTO> gamesDTOList;
 
     @Mock
     private GameRepository gameRepository;
@@ -84,7 +88,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenGetAllGames_whenGetAllGames_shouldReturnGameDTOList() {
+    public void givenGetAllGames_whenGetAllGames_shouldReturnsGameDTOList() {
         when(gameRepository.findAll()).thenReturn(Arrays.asList(game));
 
         List<GameDTO> gameDTOList = gameService.getAllGames();
@@ -105,7 +109,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenGetGameByTitle_whenGetGameByValidTitle_shouldReturnGameDTOList() {
+    public void givenGetGameByTitle_whenGetGameByValidTitle_shouldReturnsGameDTOList() {
         when(gameRepository.findGamesByTitle(any(String.class))).thenReturn(Arrays.asList(game));
 
         List<GameDTO> gameDTOList = gameService.getGameByTitle("PUBG: BATTLEGROUNDS");
@@ -126,7 +130,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenGetGameByTitle_whenGetGameByInvalidTitle_shouldReturnEmptyGameDTOList() {
+    public void givenGetGameByTitle_whenGetGameByInvalidTitle_shouldReturnsEmptyGameDTOList() {
         when(gameRepository.findGamesByTitle(any(String.class))).thenReturn(Arrays.asList());
 
         List<GameDTO> gameDTOList = gameService.getGameByTitle("Invalid");
@@ -136,7 +140,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenGetGameByTitle_whenGetGameByNoTitle_shouldReturnEmptyGameDTOList() {
+    public void givenGetGameByTitle_whenGetGameByNoTitle_shouldReturnsEmptyGameDTOList() {
         when(gameRepository.findGamesByTitle(null)).thenReturn(Arrays.asList());
 
         List<GameDTO> gameDTOList = gameService.getGameByTitle(null);
@@ -146,35 +150,45 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenSaveGame_whenSaveValidGameAndGenre_shouldCreateAGame() {
-        when(gameService.getAllGames()).thenReturn(Arrays.asList());
-        when(gameRepository.save(game)).thenReturn(game);
+    public void givenSaveGame_whenSaveValidGameAndGenre_shouldReturnsGameDTO() {
+        when(gameRepository.save(any(Game.class))).thenReturn(game);
 
-        gameDTO = gameService.saveGame(516L);
+        GameDTO gameDTOAux = GameDTO.builder()
+                .id(516L)
+                .title("PUBG: BATTLEGROUNDS")
+                .thumbnail("https://www.freetogame.com/g/516/thumbnail.jpg")
+                .short_description("Get into the action in one of the longest running battle royale games PUBG Battlegrounds.")
+                .game_url("https://www.freetogame.com/open/pubg")
+                .genre("Shooter")
+                .platform("PC (Windows)")
+                .publisher("KRAFTON, Inc.")
+                .developer("KRAFTON, Inc.")
+                .release_date(LocalDate.parse("2022-01-12", DTF))
+                .freetogame_profile_url("https://www.freetogame.com/pubg")
+                .build();
 
-        assertNotNull(gameDTO);
-        assertEquals(1, gameDTO.getId());
-        assertEquals("PUBG: BATTLEGROUNDS", gameDTO.getTitle());
-        assertEquals("https://www.freetogame.com/g/516/thumbnail.jpg", gameDTO.getThumbnail());
-        assertEquals("Get into the action in one of the longest running battle royale games PUBG Battlegrounds.", gameDTO.getShort_description());
-        assertEquals("https://www.freetogame.com/open/pubg", gameDTO.getGame_url());
-        assertEquals("Shooter", gameDTO.getGenre());
-        assertEquals("PC (Windows)", gameDTO.getPlatform());
-        assertEquals("KRAFTON, Inc.", gameDTO.getPublisher());
-        assertEquals("KRAFTON, Inc.", gameDTO.getDeveloper());
-        assertEquals(LocalDate.parse("2022-01-12", DTF), gameDTO.getRelease_date());
-        assertEquals("https://www.freetogame.com/pubg", gameDTO.getFreetogame_profile_url());
+        when(webClientAdapter.getGameById(516L)).thenReturn(gameDTOAux);
+
+        GameDTO saveGame = gameService.saveGame(516L);
+
+        assertNotNull(saveGame);
+        assertEquals(1, saveGame.getId());
+        assertEquals("PUBG: BATTLEGROUNDS", saveGame.getTitle());
+        assertEquals("https://www.freetogame.com/g/516/thumbnail.jpg", saveGame.getThumbnail());
+        assertEquals("Get into the action in one of the longest running battle royale games PUBG Battlegrounds.", saveGame.getShort_description());
+        assertEquals("https://www.freetogame.com/open/pubg", saveGame.getGame_url());
+        assertEquals("Shooter", saveGame.getGenre());
+        assertEquals("PC (Windows)", saveGame.getPlatform());
+        assertEquals("KRAFTON, Inc.", saveGame.getPublisher());
+        assertEquals("KRAFTON, Inc.", saveGame.getDeveloper());
+        assertEquals(LocalDate.parse("2022-01-12", DTF), saveGame.getRelease_date());
+        assertEquals("https://www.freetogame.com/pubg", saveGame.getFreetogame_profile_url());
     }
 
-//    @Test
-//    public void givenSaveGame_whenSaveInvalidGame_shouldReturnGameNotFoundException() {
-//
-//    }
-//
-//    @Test
-//    public void givenSaveGame_whenSaveNoGame_shouldReturnGameNotFoundException() {
-//
-//    }
+    @Test
+    public void givenSaveGame_whenSaveNoGame_shouldReturnsGameNotFoundException() {
+        assertThrows(GameNotFoundException.class, () -> gameService.saveGame(null));
+    }
 
     @Test
     public void givenDeleteGameByTitle_whenDeleteGameByValidTitle_shouldDeleteGame() {
@@ -186,12 +200,12 @@ public class GameServiceTest {
     }
 
     @Test
-    public void givenDeleteGameByTitle_whenDeleteGameByInvalidTitle_shouldReturnGameNotFoundException() {
+    public void givenDeleteGameByTitle_whenDeleteGameByInvalidTitle_shouldReturnsGameNotFoundException() {
         assertThrows(GameNotFoundException.class, () -> gameService.deleteGame("Invalid"));
     }
 
     @Test
-    public void givenDeleteGameByTitle_whenDeleteGameByNoTitle_shouldReturnGameNotFoundException() {
+    public void givenDeleteGameByTitle_whenDeleteGameByNoTitle_shouldReturnsGameNotFoundException() {
         assertThrows(GameNotFoundException.class, () -> gameService.deleteGame(null));
     }
 
