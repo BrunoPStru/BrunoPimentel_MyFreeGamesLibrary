@@ -23,7 +23,7 @@ services:
     container_name: myfreegames
     ports:
       - 8081:8081
-    environment:      
+    environment:
       - PORT=8081
       - MYSQL_CONTAINER=mysql
       - SPRING_PROFILES_ACTIVE=prod
@@ -31,8 +31,8 @@ services:
       - My-Free-Games
     depends_on:
       - mysql
-      
-  
+
+
 networks:
   My-Free-Games:
     driver: bridge

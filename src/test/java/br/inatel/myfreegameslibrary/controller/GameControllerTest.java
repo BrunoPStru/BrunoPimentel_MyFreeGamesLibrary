@@ -1,8 +1,6 @@
 package br.inatel.myfreegameslibrary.controller;
 
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
-import br.inatel.myfreegameslibrary.repository.GameRepository;
-import br.inatel.myfreegameslibrary.service.GameService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,12 +24,6 @@ public class GameControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @Autowired
-    private GameService gameService;
-
-    @Autowired
-    private GameRepository gameRepository;
 
     @Test
     public void givenGetAllGames_whenCallGetMethod_shouldReturnsGameDTOList() {

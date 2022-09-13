@@ -35,10 +35,6 @@ public class GameServiceTest {
 
     private Game game;
 
-    private List<Game> gamesList;
-
-    private List<GameDTO> gamesDTOList;
-
     @Mock
     private GameRepository gameRepository;
 
