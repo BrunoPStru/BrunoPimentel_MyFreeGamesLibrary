@@ -4,6 +4,7 @@ services:
   mysql:
     image: mysql:8
     container_name: mysql
+    hostname: mysql
     ports:
       - 3306:3306
       - 33060:33060
@@ -11,7 +12,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=bootdb
     networks:
-      - My-Free-Games
+      - my-free-games-network
     volumes:
       - /var/lib/mysql
 
@@ -21,18 +22,20 @@ services:
       context: ./
     image: bruno-pimentel-struminski/myfreegames
     container_name: myfreegames
+    hostname: myfreegames
     ports:
       - 8081:8081
     environment:
       - PORT=8081
+      - FREETOGAME_API_URL=https://www.freetogame.com
       - MYSQL_CONTAINER=mysql
       - SPRING_PROFILES_ACTIVE=prod
     networks:
-      - My-Free-Games
+      - my-free-games-network
     depends_on:
       - mysql
 
 
 networks:
-  My-Free-Games:
+  my-free-games-network:
     driver: bridge
