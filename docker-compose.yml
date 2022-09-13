@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    hostname: mysql
+    ports:
+      - 3306:3306
+      - 33060:33060
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bootdb
+    networks:
+      - my-free-games-network
+    volumes:
+      - /var/lib/mysql
+
+  myfreegames:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    image: bruno-pimentel-struminski/myfreegames
+    container_name: myfreegames
+    hostname: myfreegames
+    ports:
+      - 8081:8081
+    environment:
+      - PORT=8081
+      - FREETOGAME_API_URL=https://www.freetogame.com
+      - MYSQL_CONTAINER=mysql
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - my-free-games-network
+    depends_on:
+      - mysql
+
+
+networks:
+  my-free-games-network:
+    driver: bridge
