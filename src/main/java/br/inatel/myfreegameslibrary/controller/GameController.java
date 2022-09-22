@@ -41,7 +41,7 @@ public class GameController {
     @DeleteMapping()
     public ResponseEntity<Object> deleteGame(@RequestParam String title) {
         gameService.deleteGame(title);
-        return ResponseEntity.status(HttpStatus.OK).body("Game " + title + " deleted successfully!");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

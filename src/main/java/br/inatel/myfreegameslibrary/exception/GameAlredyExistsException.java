@@ -1,12 +1,9 @@
 package br.inatel.myfreegameslibrary.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-public class GameAlredyExistsException extends ResponseStatusException {
+public class GameAlredyExistsException extends RuntimeException {
     public GameAlredyExistsException() {
 
-        super(HttpStatus.BAD_REQUEST, String.format("Game alredy exists."));
+        super(String.format("Game alredy exists."));
 
     }
 }

@@ -1,5 +1,6 @@
 package br.inatel.myfreegameslibrary.service;
 
+import br.inatel.myfreegameslibrary.exception.FreeToPlayConnectionException;
 import br.inatel.myfreegameslibrary.exception.GameNotFoundException;
 import br.inatel.myfreegameslibrary.model.dto.GameDTO;
 import br.inatel.myfreegameslibrary.model.entity.Game;
@@ -180,6 +181,11 @@ public class GameServiceTest {
         assertEquals(LocalDate.parse("2022-01-12", DTF), saveGame.getRelease_date());
         assertEquals("https://www.freetogame.com/pubg", saveGame.getFreetogame_profile_url());
     }
+
+//    @Test
+//    public void givenSaveGame_whenSaveInvalidGame_shouldReturnsFreeToPlayConnectionException() {
+//        assertThrows(FreeToPlayConnectionException.class, () -> gameService.saveGame(999L));
+//    }
 
     @Test
     public void givenSaveGame_whenSaveNoGame_shouldReturnsGameNotFoundException() {

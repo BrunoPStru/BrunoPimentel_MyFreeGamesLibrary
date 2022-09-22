@@ -140,9 +140,7 @@ public class GameControllerTest {
                 .uri("/game?title=PUBG: BATTLEGROUNDS")
                 .exchange()
                 .expectStatus()
-                .isOk()
-                .expectBody(String.class)
-                .isEqualTo("Game PUBG: BATTLEGROUNDS deleted successfully!");
+                .isNoContent();
     }
 
     @Test
